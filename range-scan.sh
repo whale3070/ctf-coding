@@ -71,20 +71,17 @@ do
 done
 #scan services version.
 
+echo -e "\033[31m step 4: rescan masscan port scan?\033[0m"
+read -p "y/n" choice
 for line in $(cat IP-out.txt) #依次迭代txt的每一行
 do
     if ls /root/Desktop/$line/nmap-result;then
-        echo -e "\033[31m step 4: rescan masscan port scan?\033[0m"
-        read -p "y/n" choice
-            if [ "${choice}" == "u" ]; then
+            if [ "${choice}" == "y" ]; then
                  rm /root/Desktop/$line/nmap-result
-	             masscan -p1-65535,U:1-65535 --rate=1000 -e tun0 $line > /root/Desktop/$line/ports.txt
+	         masscan -p1-65535,U:1-65535 --rate=1000 -e tun0 $line > /root/Desktop/$line/ports.txt
             fi
 
     else
-        cd /root/Desktop/$line
-        #rm /root/Desktop/$line/ports.txt
-        ports=$(cat /root/Desktop/$line/ports.txt | awk -F " " '{print $4}' | awk -F "/" '{print $1}' | sort -n | tr '\n' ',' | sed 's/,$//')
-        nmap -Pn -sV -sC -p$ports ${line} -oN nmap-result
+	echo 'done'
     fi
 done
