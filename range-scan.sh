@@ -29,6 +29,9 @@ echo " apt install masscan;apt install nmap 如果没有请安装"
 
 banner
 
+wget https://raw.githubusercontent.com/Whale3070/ctf-coding/master/clear-ip.py
+touch not-scan-ip.txt
+
 if [ -f "/root/Documents/scan/IP-out.txt" ];then # if file exist,not scan IP which is up
 #if cat /root/Documents/scan/IP-out.txt;then
     echo -e "\033[31m step 1: skip host existing scan... \033[0m"
