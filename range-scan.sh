@@ -24,7 +24,7 @@ echo "  .   O'   @@    @~~~~~~~~~~~~~~~~~~~~~·"
 echo "  OO..      @ MMMMMMMMMMM~~~~~~~~~~~~~~~~~~~~~~~"  
 echo "         ~~~~~WWWWWWWWWWWWWW~~~~~~~~~~~~~~~~"  
 echo "    ~~~MMMMMMMMMMMM~~~~~~~~~~~~"     
-echo ""   
+echo " apt install masscan;apt install nmap 如果没有请安装"   
 }
 
 banner
@@ -62,7 +62,7 @@ done
 for line in $(cat IP-out.txt) #依次迭代txt的每一行
 do
     if ls /root/Desktop/$line/nmap-result;then
-        echo -e "\033[31m step 3: skit port version scan, exit...\033[0m"
+        echo -e "\033[31m step 3: skip port version scan, exit...\033[0m"
     else
         cd /root/Desktop/$line
         ports=$(cat /root/Desktop/$line/ports.txt | awk -F " " '{print $4}' | awk -F "/" '{print $1}' | sort -n | tr '\n' ',' | sed 's/,$//')
@@ -71,4 +71,20 @@ do
 done
 #scan services version.
 
+for line in $(cat IP-out.txt) #依次迭代txt的每一行
+do
+    if ls /root/Desktop/$line/nmap-result;then
+        echo -e "\033[31m step 4: rescan masscan port scan?\033[0m"
+        read -p "y/n" choice
+            if [ "${choice}" == "u" ]; then
+                 rm /root/Desktop/$line/nmap-result
+	             masscan -p1-65535,U:1-65535 --rate=1000 -e tun0 $line > /root/Desktop/$line/ports.txt
+            fi
 
+    else
+        cd /root/Desktop/$line
+        #rm /root/Desktop/$line/ports.txt
+        ports=$(cat /root/Desktop/$line/ports.txt | awk -F " " '{print $4}' | awk -F "/" '{print $1}' | sort -n | tr '\n' ',' | sed 's/,$//')
+        nmap -Pn -sV -sC -p$ports ${line} -oN nmap-result
+    fi
+done
