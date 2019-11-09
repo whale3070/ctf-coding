@@ -2,8 +2,8 @@
 
 '''
 # Exploit Title: Centreon v19.04 authenticated Remote Code Execution
-# Date: 28/06/2019
-# Exploit Author: Askar (@mohammadaskar2)
+# Date: 11/09/2019
+# Exploit Author: Askar (@mohammadaskar2),whale edited for wall machine in htb
 # CVE : CVE-2019-13024
 # Vendor Homepage: https://www.centreon.com/
 # Software link: https://download.centreon.com
