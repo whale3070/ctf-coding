@@ -289,7 +289,7 @@ try {
 	var d = fmt.Deserialize_2(stm);
 	al.Add(undefined);
 	var o = d.DynamicInvoke(al.ToArray()).CreateInstance(entry_class);
-	debug(o.InvokePSMember("calc.exe"));
+	debug(o.InvokePSMember("Get-Process"));
 } catch (e) {
     debug(e.message);
 }
